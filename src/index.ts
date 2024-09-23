@@ -126,22 +126,29 @@ import fs from 'fs';
 // }
 
 
-function exportCsvToTxt(csvFilePath: string): void {
+function exportCsvToTxt(csvFilePath: string): Promise<void> {
   const txtFilePath = csvFilePath.replace('.csv', '.txt');
   const readableStream = fs.createReadStream(csvFilePath);
   const writableStream = fs.createWriteStream(txtFilePath);
 
-  readableStream
-    .pipe(csv())
-    .on('data', (chunk: Buffer) => {
-      writableStream.write(chunk.toString('utf-8'));
-    })
-    .on('end', () => {
-      console.log('Operation csv to txt successfully finished!');
-    })
-    .on('error', (error: any) => {
-      console.log('Operation csv to txt failed!', error);
-    });
+  return new Promise((resolve, reject) => {
+    readableStream
+      .pipe(csv({
+        delimiter: ';'
+      }))
+      .on('data', (chunk: Buffer) => {
+        writableStream.write(chunk.toString('utf-8'));
+      })
+      .on('end', () => {
+        console.log('Operation csv to txt successfully finished!');
+        resolve();
+      })
+      .on('error', (error: any) => {
+        console.log('Operation csv to txt failed!', error);
+        reject(error);
+      });
+  })
 }
 
-exportCsvToTxt('src/assets/books.csv');
+exportCsvToTxt('src/assets/books.csv')
+  .then(() => {});
