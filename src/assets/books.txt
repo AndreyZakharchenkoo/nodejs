@@ -1,0 +1,5 @@
+{"Book;Author;Amount;Price":"The Compound Effect;Darren Hardy;5;9","field2":"48"}
+{"Book;Author;Amount;Price":"The 7 Habits of Highly Effective People;Stephen R. Covey;4;23","field2":"48"}
+{"Book;Author;Amount;Price":"The Miracle Morning;Hal Elrod;10;21","field2":"34"}
+{"Book;Author;Amount;Price":"Influence: The Psychology of Persuasion;Robert B. Cialdini;4;12","field2":"99"}
+{"Book;Author;Amount;Price":"The ONE Thing;Gary Keller;1;11","field2":"18"}
