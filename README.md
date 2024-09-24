@@ -16,5 +16,5 @@ npm install
 
 Start implementing the tasks based on Acceptance criteria provided in ebook.
 
-nvm use --lts - stable
-nvm use node - latest version
+[//]: # (nvm use --lts - stable)
+[//]: # (nvm use node - latest version)
