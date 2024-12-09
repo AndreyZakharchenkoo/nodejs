@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-gmp-template-module-3-eventemitter-buffer-streams",
+  "name": "nodejs",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",

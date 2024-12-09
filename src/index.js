@@ -1,10 +1,11 @@
 const os = require('os');
+
 import { exec, ExecException } from 'child_process';
 import logProcesses from './activityMonitor';
 
 let lastOutput = '';
 
-function getPlatformCmd() {
+function checkPlatform(): string {
   const platform = os.platform();
   const unixLikePlatforms = [
     'aix',       // IBM AIX
@@ -25,33 +26,34 @@ function getPlatformCmd() {
   } else if (windowsPlatforms.includes(platform)) {
     return `powershell "Get-Process | Sort-Object CPU -Descending | Select-Object -Property Name, CPU, WorkingSet -First 1 | ForEach-Object { $_.Name + ' ' + $_.CPU + ' ' + $_.WorkingSet }"`;
   } else {
-    return '';
+    logProcesses(`Unsupported platform - ${os.platform()}`, 'activityMonitor.log');
+    process.stdout.end('Process exited with code 1 ');
+    process.exit(1);
   }
-}
-
-function processExit() {
-  process.stderr.end('Process exited with code 1 ');
-  process.exit(1);
 }
 
 function execProcess(command: string) {
   exec(command, (error: ExecException | null, stdout: string, stderr: string) => {
     if (error) {
       logProcesses(`Error: ${error.message}`, 'activityMonitor.log');
-      processExit();
+      process.stdout.write('Process exited with code 1 ');
+      return;
     }
 
     if (stderr) {
       logProcesses(stderr, 'activityMonitor.log');
-      processExit();
+      process.stdout.write('Process exited with code 1 ');
+      return;
     }
 
     lastOutput = stdout;
   });
 }
 
+
 function updateConsole() {
-  process.stdout.write(`${lastOutput}\r\n`);
+  console.clear();
+  console.log(lastOutput);
 }
 
 function updateLog() {
@@ -59,14 +61,8 @@ function updateLog() {
 }
 
 setInterval(() => {
-  const command = getPlatformCmd();
-
-  if (!command) {
-    logProcesses(`Unsupported platform - ${os.platform()}`, 'activityMonitor.log');
-    processExit();
-  } else {
-    execProcess(command);
-  }
+  const command = checkPlatform();
+  execProcess(command);
 }, 100);
 
 setInterval(updateConsole, 100);
